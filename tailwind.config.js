@@ -1,0 +1,71 @@
+import defaultTheme from 'tailwindcss/defaultTheme';
+import forms from '@tailwindcss/forms';
+
+/** @type {import('tailwindcss').Config} */
+export default {
+    content: [
+        './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
+        './storage/framework/views/*.php',
+        './resources/views/**/*.blade.php',
+    ],
+
+    theme: {
+        extend: {
+            fontFamily: {
+                sans: ['Poppins', ...defaultTheme.fontFamily.sans],
+            },
+            colors: {
+                'admin': {
+                    50: '#f8fafc',
+                    100: '#f1f5f9',
+                    200: '#e2e8f0',
+                    300: '#cbd5e1',
+                    400: '#94a3b8',
+                    500: '#64748b',
+                    600: '#475569',
+                    700: '#334155',
+                    800: '#1e293b',
+                    900: '#0f172a',
+                },
+                'warga': {
+                    50: '#ecfdf5',
+                    100: '#d1fae5',
+                    200: '#a7f3d0',
+                    300: '#6ee7b7',
+                    400: '#34d399',
+                    500: '#10b981',
+                    600: '#059669',
+                    700: '#047857',
+                    800: '#065f46',
+                    900: '#064e3b',
+                },
+            },
+            keyframes: {
+                fadeInUp: {
+                    '0%': { opacity: '0', transform: 'translateY(30px)' },
+                    '100%': { opacity: '1', transform: 'translateY(0)' },
+                },
+                fadeIn: {
+                    '0%': { opacity: '0' },
+                    '100%': { opacity: '1' },
+                },
+                slideInLeft: {
+                    '0%': { opacity: '0', transform: 'translateX(-20px)' },
+                    '100%': { opacity: '1', transform: 'translateX(0)' },
+                },
+                scaleIn: {
+                    '0%': { opacity: '0', transform: 'scale(0.95)' },
+                    '100%': { opacity: '1', transform: 'scale(1)' },
+                },
+            },
+            animation: {
+                'fade-in-up': 'fadeInUp 0.6s ease-out both',
+                'fade-in': 'fadeIn 0.4s ease-out both',
+                'slide-in-left': 'slideInLeft 0.4s ease-out both',
+                'scale-in': 'scaleIn 0.3s ease-out both',
+            },
+        },
+    },
+
+    plugins: [forms],
+};

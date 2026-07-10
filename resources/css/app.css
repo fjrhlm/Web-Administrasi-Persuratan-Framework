@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .glass-card {
+        @apply bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl;
+    }
+
+    .input-glass {
+        @apply bg-white/10 backdrop-blur-sm border border-white/30 text-white placeholder-white/50 rounded-xl px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-white/40 focus:border-transparent transition-all duration-300;
+    }
+
+    .btn-gradient {
+        @apply bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl hover:from-indigo-500 hover:to-violet-500 transform hover:-translate-y-0.5 transition-all duration-300;
+    }
+}
+
+/* Print Styles for Cetak Surat */
+@media print {
+    @page {
+        size: A4;
+        margin: 2cm 2.5cm;
+    }
+
+    body {
+        font-family: 'Times New Roman', Times, serif !important;
+        font-size: 12pt;
+        line-height: 1.6;
+        color: #000 !important;
+        background: #fff !important;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+
+    .print-only {
+        display: block !important;
+    }
+
+    .kop-surat {
+        border-bottom: 3px solid #000;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+
+    .kop-surat h1 {
+        font-size: 14pt;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .kop-surat h2 {
+        font-size: 16pt;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .kop-surat p {
+        font-size: 10pt;
+    }
+
+    .surat-body {
+        text-align: justify;
+    }
+
+    .ttd-block {
+        page-break-inside: avoid;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    table th,
+    table td {
+        border: 1px solid #000;
+        padding: 6px 10px;
+        text-align: left;
+    }
+}
