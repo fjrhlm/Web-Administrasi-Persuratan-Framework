@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\Pengaturan;
 use App\Models\PengajuanSurat;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class KelolaSuratController extends Controller
@@ -43,12 +45,23 @@ class KelolaSuratController extends Controller
     public function update(Request $request, int $id): RedirectResponse
     {
         $validated = $request->validate([
-            'status' => ['required', 'string', 'in:Menunggu,Diproses,Ditolak,Selesai'],
-            'keterangan_admin' => ['nullable', 'string', 'max:1000'],
+            'status'            => ['required', 'string', 'in:Menunggu,Diproses,Ditolak,Selesai'],
+            'keterangan_admin'  => ['nullable', 'string', 'max:1000'],
         ]);
 
-        $pengajuan = PengajuanSurat::findOrFail($id);
+        $pengajuan       = PengajuanSurat::findOrFail($id);
+        $statusLama      = $pengajuan->status;
         $pengajuan->update($validated);
+
+        /** @var \App\Models\User $admin */
+        $admin = Auth::user();
+
+        // Catat perubahan status ke audit trail
+        ActivityLog::record(
+            'ubah_status',
+            "Admin '{$admin->name}' mengubah status pengajuan #{$pengajuan->id} (a.n. {$pengajuan->user->name}) dari '{$statusLama}' menjadi '{$validated['status']}'.",
+            $pengajuan->id
+        );
 
         return redirect()
             ->route('admin.kelola-surat.show', $id)
@@ -60,21 +73,21 @@ class KelolaSuratController extends Controller
      */
     public function cetakSurat(int $id): View
     {
-        $pengajuan = PengajuanSurat::with('user')->findOrFail($id);
+        $pengajuan  = PengajuanSurat::with('user')->findOrFail($id);
         $pengaturan = Pengaturan::first();
 
         // Letter numbering logic
         $kodeSurat = match ($pengajuan->jenis_surat) {
-            'SKTM' => '141',
-            'SKU' => '520',
-            'Domisili' => '141',
-            'Pengantar SKCK' => '332',
-            'Belum Menikah' => '474.2',
-            'Kematian' => '474.3',
-            'Kelahiran' => '474.1',
+            'SKTM'                  => '141',
+            'SKU'                   => '520',
+            'Domisili'              => '141',
+            'Pengantar SKCK'        => '332',
+            'Belum Menikah'         => '474.2',
+            'Kematian'              => '474.3',
+            'Kelahiran'             => '474.1',
             'Penghasilan Orang Tua' => '420',
-            'Pindah Penduduk' => '475',
-            default => '000',
+            'Pindah Penduduk'       => '475',
+            default                 => '000',
         };
 
         $romanMonths = [
@@ -84,11 +97,21 @@ class KelolaSuratController extends Controller
         ];
 
         $bulanRomawi = $romanMonths[$pengajuan->tgl_pengajuan->month];
-        $tahun = $pengajuan->tgl_pengajuan->year;
-        $nomorUrut = str_pad($pengajuan->id, 3, '0', STR_PAD_LEFT);
+        $tahun       = $pengajuan->tgl_pengajuan->year;
+        $nomorUrut   = str_pad($pengajuan->id, 3, '0', STR_PAD_LEFT);
 
         $nomorSurat = "{$kodeSurat} / {$nomorUrut} / PEM / {$bulanRomawi} / {$tahun}";
+
+        // Catat cetak surat ke audit trail
+        /** @var \App\Models\User $admin */
+        $admin = Auth::user();
+        ActivityLog::record(
+            'cetak_surat',
+            "Admin '{$admin->name}' mencetak surat {$pengajuan->jenis_surat} No. {$nomorSurat} a.n. {$pengajuan->user->name}.",
+            $pengajuan->id
+        );
 
         return view('admin.cetak-surat', compact('pengajuan', 'pengaturan', 'nomorSurat'));
     }
 }
+

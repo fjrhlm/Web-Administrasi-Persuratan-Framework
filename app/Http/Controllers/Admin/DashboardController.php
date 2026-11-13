@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\PengajuanSurat;
 use App\Models\User;
 use Illuminate\View\View;
@@ -22,6 +23,9 @@ class DashboardController extends Controller
 
         $totalWarga = User::where('role', 'warga')->count();
 
-        return view('admin.dashboard', compact('pendingSurat', 'totalSuratBulanIni', 'totalWarga'));
+        $recentLogs = ActivityLog::with('user')->latest()->take(5)->get();
+
+        return view('admin.dashboard', compact('pendingSurat', 'totalSuratBulanIni', 'totalWarga', 'recentLogs'));
     }
 }
+

@@ -84,9 +84,9 @@
                     <div class="group relative">
                         <p class="text-xs font-medium text-gray-500 mb-2">Foto KTP</p>
                         @if($pengajuan->file_ktp)
-                            <div @click="lightbox = '{{ asset('storage/uploads/' . $pengajuan->file_ktp) }}'"
+                            <div @click="lightbox = '{{ route('berkas.serve', ['id' => $pengajuan->id, 'type' => 'ktp']) }}'"
                                  class="cursor-pointer rounded-xl overflow-hidden border-2 border-gray-100 hover:border-admin-300 transition-all duration-300 aspect-[4/3]">
-                                <img src="{{ asset('storage/uploads/' . $pengajuan->file_ktp) }}" alt="Foto KTP"
+                                <img src="{{ route('berkas.serve', ['id' => $pengajuan->id, 'type' => 'ktp']) }}" alt="Foto KTP"
                                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                             </div>
                         @else
@@ -100,9 +100,9 @@
                     <div class="group relative">
                         <p class="text-xs font-medium text-gray-500 mb-2">Pengantar RT/RW</p>
                         @if($pengajuan->file_pengantar)
-                            <div @click="lightbox = '{{ asset('storage/uploads/' . $pengajuan->file_pengantar) }}'"
+                            <div @click="lightbox = '{{ route('berkas.serve', ['id' => $pengajuan->id, 'type' => 'pengantar']) }}'"
                                  class="cursor-pointer rounded-xl overflow-hidden border-2 border-gray-100 hover:border-admin-300 transition-all duration-300 aspect-[4/3]">
-                                <img src="{{ asset('storage/uploads/' . $pengajuan->file_pengantar) }}" alt="Pengantar RT/RW"
+                                <img src="{{ route('berkas.serve', ['id' => $pengajuan->id, 'type' => 'pengantar']) }}" alt="Pengantar RT/RW"
                                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                             </div>
                         @else
@@ -116,9 +116,9 @@
                     <div class="group relative">
                         <p class="text-xs font-medium text-gray-500 mb-2">Dokumen Tambahan</p>
                         @if($pengajuan->file_tambahan)
-                            <div @click="lightbox = '{{ asset('storage/uploads/' . $pengajuan->file_tambahan) }}'"
+                            <div @click="lightbox = '{{ route('berkas.serve', ['id' => $pengajuan->id, 'type' => 'tambahan']) }}'"
                                  class="cursor-pointer rounded-xl overflow-hidden border-2 border-gray-100 hover:border-admin-300 transition-all duration-300 aspect-[4/3]">
-                                <img src="{{ asset('storage/uploads/' . $pengajuan->file_tambahan) }}" alt="Dokumen Tambahan"
+                                <img src="{{ route('berkas.serve', ['id' => $pengajuan->id, 'type' => 'tambahan']) }}" alt="Dokumen Tambahan"
                                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                             </div>
                         @else

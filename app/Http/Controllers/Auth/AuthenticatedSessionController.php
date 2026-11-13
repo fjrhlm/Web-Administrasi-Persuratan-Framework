@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -30,12 +31,12 @@ class AuthenticatedSessionController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'login' => ['required', 'string'],
+            'login'    => ['required', 'string'],
             'password' => ['required', 'string'],
         ]);
 
         $loginValue = $request->input('login');
-        $password = $request->input('password');
+        $password   = $request->input('password');
 
         // Determine if the login value is an email, a 16-digit NIK, or a username
         if (filter_var($loginValue, FILTER_VALIDATE_EMAIL)) {
@@ -47,14 +48,28 @@ class AuthenticatedSessionController extends Controller
         }
 
         if (!$user || !Hash::check($password, $user->password)) {
+            // Catat percobaan login gagal ke audit trail
+            ActivityLog::create([
+                'user_id'    => $user?->id ?? null,
+                'aksi'       => 'login_gagal',
+                'keterangan' => "Percobaan login gagal dengan identifier: '{$loginValue}'",
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ]);
+
             throw ValidationException::withMessages([
                 'login' => __('auth.failed'),
             ]);
         }
 
         Auth::login($user, $request->boolean('remember'));
-
         $request->session()->regenerate();
+
+        // Catat login berhasil ke audit trail
+        ActivityLog::record(
+            'login',
+            "User '{$user->name}' (role: {$user->role}) berhasil login."
+        );
 
         // Redirect based on role
         if ($user->isAdmin()) {
@@ -69,12 +84,18 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        // Catat logout ke audit trail sebelum session dihapus
+        if (Auth::check()) {
+            /** @var \App\Models\User $user */
+            $user = Auth::user();
+            ActivityLog::record('logout', "User '{$user->name}' logout.");
+        }
+
         Auth::guard('web')->logout();
-
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/');
     }
 }
+

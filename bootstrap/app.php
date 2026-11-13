@@ -4,6 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Middleware\RoleMiddleware;
+use App\Http\Middleware\SecurityHeaders;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -13,6 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function ($middleware): void {
         /** @var mixed $middleware */
+        // Pasang Security Headers secara global di semua request
+        $middleware->append(SecurityHeaders::class);
+
         $middleware->alias([
             'role' => RoleMiddleware::class,
         ]);

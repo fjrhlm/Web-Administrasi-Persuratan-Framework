@@ -131,8 +131,9 @@
                     <div>
                         <label for="password" class="block text-sm font-medium text-white/80 mb-2">Password <span class="text-red-400">*</span></label>
                         <input id="password" type="password" name="password"
-                               class="input-glass" placeholder="Minimal 8 karakter"
+                               class="input-glass" placeholder="Minimal 8 karakter kuat"
                                required autocomplete="new-password">
+                        <p class="mt-1 text-[11px] text-white/60">Minimal 8 karakter, kombinasi huruf besar, kecil, angka, & simbol.</p>
                         @error('password')
                             <p class="mt-1.5 text-sm text-red-400">{{ $message }}</p>
                         @enderror

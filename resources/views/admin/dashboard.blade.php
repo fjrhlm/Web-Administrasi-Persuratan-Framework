@@ -81,6 +81,46 @@
                 </svg>
                 Lihat Laporan
             </a>
+            <a href="{{ route('admin.activity-log.index') }}"
+               class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-amber-700 text-sm font-medium rounded-xl border-2 border-amber-200 hover:bg-amber-50 hover:border-amber-300 shadow-sm hover:shadow-md transition-all duration-300">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                </svg>
+                Audit Trail Log
+            </a>
+        </div>
+    </div>
+
+    {{-- Recent Activity Logs --}}
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                <svg class="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Aktivitas Keamanan Terbaru
+            </h3>
+            <a href="{{ route('admin.activity-log.index') }}" class="text-xs text-blue-600 hover:text-blue-800 font-medium">
+                Lihat Semua &rarr;
+            </a>
+        </div>
+
+        <div class="divide-y divide-gray-100">
+            @forelse($recentLogs as $log)
+                <div class="py-3 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold {{ $log->badge_color }} shrink-0">
+                            {{ $log->icon }} {{ ucfirst(str_replace('_', ' ', $log->aksi)) }}
+                        </span>
+                        <p class="text-sm text-gray-700 truncate">{{ $log->keterangan }}</p>
+                    </div>
+                    <span class="text-xs text-gray-400 whitespace-nowrap font-mono shrink-0">
+                        {{ $log->created_at->diffForHumans() }}
+                    </span>
+                </div>
+            @empty
+                <p class="text-xs text-gray-400 py-3 text-center">Belum ada aktivitas tercatat.</p>
+            @endforelse
         </div>
     </div>
 </div>
